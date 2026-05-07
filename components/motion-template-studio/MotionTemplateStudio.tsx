@@ -1,6 +1,5 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import { useState, useEffect } from "react";
 import {
   Film,
@@ -13,24 +12,14 @@ import {
   ChevronDown,
   Loader2,
   CheckCircle2,
+  // Loader2 kept for render state
 } from "lucide-react";
 import type { TemplateKey } from "@/lib/motion/types";
 import { ALL_TEMPLATE_KEYS, getTemplate } from "@/lib/motion/registry";
 import { useClientsStore } from "@/store/useClientsStore";
 import { toBrandIntroProps, toPromoVideoProps, toReportVideoProps, toCarouselToVideoProps, toTextAnimationProps } from "@/lib/motion/brand/apply-brand-kit";
 
-// Dynamically import PlayerShell — it uses @remotion/player which is client-only
-const PlayerShell = dynamic(
-  () => import("@/lib/motion/preview/PlayerShell").then((m) => m.PlayerShell),
-  {
-    ssr: false,
-    loading: () => (
-      <div className="w-full aspect-video bg-[#111] rounded-xl flex items-center justify-center">
-        <Loader2 className="w-6 h-6 text-white/30 animate-spin" />
-      </div>
-    ),
-  },
-);
+import { PlayerShell } from "@/lib/motion/preview/PlayerShell";
 
 const TEMPLATE_ICONS: Record<TemplateKey, React.ElementType> = {
   "brand-intro": Film,
