@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { useClientsStore } from "@/store/useClientsStore";
 import { ClientRow } from "./ClientRow";
-import { ClientFormDialog } from "./ClientFormDialog";
+import { OnboardingWizard } from "./onboarding/OnboardingWizard";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 
@@ -147,7 +147,7 @@ export function ClientsBoard() {
         )}
       </div>
 
-      <ClientFormDialog open={dialogOpen} onOpenChange={setDialogOpen} />
+      <OnboardingWizard open={dialogOpen} onOpenChange={setDialogOpen} />
     </>
   );
 }
