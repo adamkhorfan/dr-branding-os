@@ -118,14 +118,4 @@ export interface RenderStatus {
   completedAt?: string;
 }
 
-// ─── Template registry entry ──────────────────────────────────────────────────
-
-export interface TemplateRegistryEntry {
-  key: TemplateKey;
-  label: string;
-  description: string;
-  aspectRatios: AspectRatio[];
-  defaultDurationFrames: number;
-  defaultFps: number;
-  defaultProps: TemplateProps;
-}
+// TemplateRegistryEntry is defined in registry.ts (the authoritative shape)

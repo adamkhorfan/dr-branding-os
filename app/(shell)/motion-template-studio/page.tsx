@@ -1,6 +1,11 @@
+import dynamic from "next/dynamic";
 import { PageContainer } from "@/components/shared/PageContainer";
 import { PageHeader } from "@/components/shared/PageHeader";
-import { MotionTemplateStudio } from "@/components/motion-template-studio/MotionTemplateStudio";
+
+const MotionTemplateStudio = dynamic(
+  () => import("@/components/motion-template-studio/MotionTemplateStudio").then((m) => m.MotionTemplateStudio),
+  { ssr: false },
+);
 
 export const metadata = { title: "Motion Template Studio · DR Branding OS" };
 

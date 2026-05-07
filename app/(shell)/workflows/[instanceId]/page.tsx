@@ -1,5 +1,10 @@
+import dynamic from "next/dynamic";
 import { PageContainer } from "@/components/shared/PageContainer";
-import { WorkflowDetail } from "@/components/workflows/WorkflowDetail";
+
+const WorkflowDetail = dynamic(
+  () => import("@/components/workflows/WorkflowDetail").then((m) => m.WorkflowDetail),
+  { ssr: false },
+);
 
 export const metadata = { title: "Workflow · DR Branding OS" };
 
