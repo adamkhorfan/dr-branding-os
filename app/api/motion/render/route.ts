@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { randomUUID } from "crypto";
 import type { RenderJob } from "@/lib/motion/types";
 import { serverRender } from "@/lib/motion/render/server-render";
+import { renderJobStore } from "@/lib/motion/render/jobStore";
+
+export const maxDuration = 300; // Allow up to 5 min for long renders (Vercel Pro)
 
 export async function POST(req: NextRequest) {
   try {
@@ -21,17 +24,26 @@ export async function POST(req: NextRequest) {
       createdAt: new Date().toISOString(),
     };
 
-    // Fire-and-forget — client polls /api/motion/status/[jobId]
-    // For simplicity in dev, we run inline (blocking) and return the result
-    const result = await serverRender(job);
+    // Mark job as in-progress immediately
+    renderJobStore.set(job.id, { state: "rendering", progress: 0 });
 
-    return NextResponse.json({
-      jobId: job.id,
-      state: "done",
-      progress: 100,
-      artifactUrl: result.artifactUrl,
-      durationMs: result.durationMs,
-    });
+    // Fire render — non-blocking so we return the jobId right away
+    serverRender(job)
+      .then((result) => {
+        renderJobStore.set(job.id, {
+          state: "done",
+          progress: 100,
+          artifactUrl: result.artifactUrl,
+          durationMs: result.durationMs,
+        });
+      })
+      .catch((err: unknown) => {
+        const message = err instanceof Error ? err.message : String(err);
+        console.error("[remotion] Render failed:", message);
+        renderJobStore.set(job.id, { state: "error", progress: 0, error: message });
+      });
+
+    return NextResponse.json({ jobId: job.id, state: "rendering", progress: 0 });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Unknown error";
     return NextResponse.json({ error: message }, { status: 500 });

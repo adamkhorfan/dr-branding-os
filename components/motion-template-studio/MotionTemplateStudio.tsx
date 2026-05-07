@@ -29,13 +29,14 @@ const TEMPLATE_ICONS: Record<TemplateKey, React.ElementType> = {
   "report-video": BarChart2,
 };
 
-type RenderState = "idle" | "rendering" | "done" | "error";
+type RenderState = "idle" | "bundling" | "rendering" | "done" | "error";
 
 export function MotionTemplateStudio() {
   const { clients, loaded, load } = useClientsStore();
   const [activeTemplate, setActiveTemplate] = useState<TemplateKey>("brand-intro");
   const [selectedClientId, setSelectedClientId] = useState<string>("__default__");
   const [renderState, setRenderState] = useState<RenderState>("idle");
+  const [renderProgress, setRenderProgress] = useState(0);
   const [artifactUrl, setArtifactUrl] = useState<string | null>(null);
   const [renderError, setRenderError] = useState<string | null>(null);
 
@@ -67,11 +68,13 @@ export function MotionTemplateStudio() {
   })();
 
   async function handleRender() {
-    setRenderState("rendering");
+    setRenderState("bundling");
+    setRenderProgress(0);
     setArtifactUrl(null);
     setRenderError(null);
 
     try {
+      // Kick off the render job
       const res = await fetch("/api/motion/render", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -84,13 +87,35 @@ export function MotionTemplateStudio() {
       });
 
       const data = await res.json();
+      if (!res.ok || data.error) throw new Error(data.error ?? "Render failed");
 
-      if (!res.ok || data.error) {
-        throw new Error(data.error ?? "Render failed");
-      }
+      const jobId: string = data.jobId;
+      setRenderState("rendering");
 
-      setArtifactUrl(data.artifactUrl ?? null);
-      setRenderState("done");
+      // Poll for completion every 2 seconds
+      await new Promise<void>((resolve, reject) => {
+        const interval = setInterval(async () => {
+          try {
+            const statusRes = await fetch(`/api/motion/status/${jobId}`);
+            const status = await statusRes.json();
+
+            setRenderProgress(status.progress ?? 0);
+
+            if (status.state === "done") {
+              clearInterval(interval);
+              setArtifactUrl(status.artifactUrl ?? null);
+              setRenderState("done");
+              resolve();
+            } else if (status.state === "error") {
+              clearInterval(interval);
+              reject(new Error(status.error ?? "Render failed"));
+            }
+          } catch (e) {
+            clearInterval(interval);
+            reject(e);
+          }
+        }, 2000);
+      });
     } catch (err) {
       setRenderError(err instanceof Error ? err.message : "Unknown error");
       setRenderState("error");
@@ -196,45 +221,67 @@ export function MotionTemplateStudio() {
         </div>
 
         {/* Action bar */}
-        <div className="flex items-center gap-3">
-          <button
-            onClick={handleRender}
-            disabled={renderState === "rendering"}
-            className="flex items-center gap-2 px-5 py-2.5 bg-[#c9a96e] text-[#0d0d0d] rounded-xl font-semibold text-sm transition-all hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {renderState === "rendering" ? (
-              <>
-                <Loader2 className="w-4 h-4 animate-spin" />
-                Rendering…
-              </>
-            ) : (
-              <>
-                <Play className="w-4 h-4" />
-                Render to MP4
-              </>
-            )}
-          </button>
-
-          {renderState === "done" && artifactUrl && (
-            <a
-              href={artifactUrl}
-              download
-              className="flex items-center gap-2 px-5 py-2.5 bg-white/8 text-white/80 rounded-xl font-medium text-sm hover:bg-white/12 border border-white/10 transition-all"
+        <div className="flex flex-col gap-3">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={handleRender}
+              disabled={renderState === "bundling" || renderState === "rendering"}
+              className="flex items-center gap-2 px-5 py-2.5 bg-[#c9a96e] text-[#0d0d0d] rounded-xl font-semibold text-sm transition-all hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <Download className="w-4 h-4" />
-              Download
-            </a>
-          )}
+              {renderState === "bundling" ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Bundling…
+                </>
+              ) : renderState === "rendering" ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Rendering {renderProgress}%
+                </>
+              ) : (
+                <>
+                  <Play className="w-4 h-4" />
+                  Render to MP4
+                </>
+              )}
+            </button>
 
-          {renderState === "done" && (
-            <div className="flex items-center gap-1.5 text-sm text-emerald-400">
-              <CheckCircle2 className="w-4 h-4" />
-              Render complete
+            {renderState === "done" && artifactUrl && (
+              <a
+                href={artifactUrl}
+                download
+                className="flex items-center gap-2 px-5 py-2.5 bg-white/8 text-white/80 rounded-xl font-medium text-sm hover:bg-white/12 border border-white/10 transition-all"
+              >
+                <Download className="w-4 h-4" />
+                Download MP4
+              </a>
+            )}
+
+            {renderState === "done" && (
+              <div className="flex items-center gap-1.5 text-sm text-emerald-400">
+                <CheckCircle2 className="w-4 h-4" />
+                Render complete
+              </div>
+            )}
+
+            {renderState === "error" && (
+              <p className="text-sm text-red-400">{renderError}</p>
+            )}
+          </div>
+
+          {/* Progress bar */}
+          {(renderState === "bundling" || renderState === "rendering") && (
+            <div className="w-full bg-white/8 rounded-full h-1.5 overflow-hidden">
+              <div
+                className="h-full bg-[#c9a96e] rounded-full transition-all duration-500"
+                style={{ width: renderState === "bundling" ? "15%" : `${Math.max(15, renderProgress)}%` }}
+              />
             </div>
           )}
-
-          {renderState === "error" && (
-            <p className="text-sm text-red-400">{renderError}</p>
+          {renderState === "bundling" && (
+            <p className="text-[11px] text-white/40">
+              First render: bundling Remotion compositions (~30s). Subsequent renders are faster.
+            </p>
           )}
         </div>
 
@@ -246,13 +293,9 @@ export function MotionTemplateStudio() {
           <p className="text-sm text-white/60 leading-relaxed">
             {entry.description}
           </p>
-          {!process.env.NEXT_PUBLIC_SUPABASE_URL && (
-            <p className="text-[11px] text-[#c9a96e]/60 mt-3 border-t border-white/6 pt-3">
-              Preview runs live in-browser via Remotion Player. MP4 render requires{" "}
-              <code className="bg-white/8 px-1 rounded">REMOTION_SERVE_URL</code> env
-              var (set after running <code className="bg-white/8 px-1 rounded">npx remotion bundle</code>).
-            </p>
-          )}
+          <p className="text-[11px] text-white/30 mt-3 border-t border-white/6 pt-3">
+            Preview runs live in-browser. MP4 render uses Chromium headless — output saved to <code className="bg-white/8 px-1 rounded">/renders/</code>.
+          </p>
         </div>
       </div>
     </div>
