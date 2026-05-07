@@ -1,12 +1,12 @@
-import type { N8nFlowCreateInput } from "@/types/n8n";
+import type { N8nFlowCreateInput, N8nNodeType } from "@/types/n8n";
 import { uid } from "@/lib/utils";
 
 function node(
-  type: string,
+  type: N8nNodeType,
   name: string,
   config: Record<string, string> = {},
 ) {
-  return { id: uid("node"), type, name, config } as const;
+  return { id: uid("node"), type, name, config };
 }
 
 export const FLOW_TEMPLATES: (N8nFlowCreateInput & { key: string; description: string })[] = [

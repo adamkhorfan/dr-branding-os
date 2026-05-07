@@ -1,3 +1,5 @@
+// This file is used by the Remotion CLI only — not by Next.js.
+// Type assertions below are intentional to satisfy Remotion's LooseComponentType.
 import { Composition } from "remotion";
 import { BrandIntroComposition } from "./templates/brand-intro/Composition";
 import { TextAnimationComposition } from "./templates/text-animation/Composition";
@@ -35,7 +37,7 @@ export const RemotionRoot: React.FC = () => {
     <>
       <Composition
         id="BrandIntro"
-        component={BrandIntroComposition}
+        component={BrandIntroComposition as any}
         durationInFrames={BRAND_INTRO_DURATION_FRAMES}
         fps={BRAND_INTRO_FPS}
         width={1080}
@@ -45,7 +47,7 @@ export const RemotionRoot: React.FC = () => {
 
       <Composition
         id="TextAnimation"
-        component={TextAnimationComposition}
+        component={TextAnimationComposition as any}
         durationInFrames={TEXT_ANIMATION_DURATION_FRAMES}
         fps={TEXT_ANIMATION_FPS}
         width={1080}
@@ -55,7 +57,7 @@ export const RemotionRoot: React.FC = () => {
 
       <Composition
         id="CarouselToVideo"
-        component={CarouselToVideoComposition}
+        component={CarouselToVideoComposition as any}
         durationInFrames={
           DEFAULT_CAROUSEL_PROPS.slides.length * DEFAULT_CAROUSEL_PROPS.framesPerSlide
         }
@@ -67,7 +69,7 @@ export const RemotionRoot: React.FC = () => {
 
       <Composition
         id="PromoVideo"
-        component={PromoVideoComposition}
+        component={PromoVideoComposition as any}
         durationInFrames={PROMO_DURATION_FRAMES}
         fps={PROMO_FPS}
         width={1920}
@@ -77,7 +79,7 @@ export const RemotionRoot: React.FC = () => {
 
       <Composition
         id="ReportVideo"
-        component={ReportVideoComposition}
+        component={ReportVideoComposition as any}
         durationInFrames={REPORT_DURATION_FRAMES}
         fps={REPORT_FPS}
         width={1920}

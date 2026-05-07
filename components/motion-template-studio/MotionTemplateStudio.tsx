@@ -48,21 +48,21 @@ export function MotionTemplateStudio() {
 
   // Build props: if client selected with brand kit, derive props from it; else use defaults
   const derivedProps: Record<string, unknown> = (() => {
-    if (!selectedClient?.brandKit) return entry.defaultProps as Record<string, unknown>;
+    if (!selectedClient?.brandKit) return entry.defaultProps as unknown as Record<string, unknown>;
     const bk = selectedClient.brandKit;
     switch (activeTemplate) {
       case "brand-intro":
-        return toBrandIntroProps(bk, selectedClient.name) as Record<string, unknown>;
+        return toBrandIntroProps(bk, selectedClient.name) as unknown as Record<string, unknown>;
       case "promo-video":
-        return toPromoVideoProps(bk, selectedClient.name, "Get Started →") as Record<string, unknown>;
+        return toPromoVideoProps(bk, selectedClient.name, "Get Started →") as unknown as Record<string, unknown>;
       case "report-video":
-        return toReportVideoProps(bk, selectedClient.name, new Date().toLocaleString("default", { month: "long", year: "numeric" }), [], []) as Record<string, unknown>;
+        return toReportVideoProps(bk, selectedClient.name, new Date().toLocaleString("default", { month: "long", year: "numeric" }), [], []) as unknown as Record<string, unknown>;
       case "carousel-to-video":
-        return toCarouselToVideoProps(bk, [{ title: "Cover" }, { title: "Point One" }, { title: "Take Action" }], selectedClient.name) as Record<string, unknown>;
+        return toCarouselToVideoProps(bk, [{ title: "Cover" }, { title: "Point One" }, { title: "Take Action" }], selectedClient.name) as unknown as Record<string, unknown>;
       case "text-animation":
-        return toTextAnimationProps(bk, selectedClient.name) as Record<string, unknown>;
+        return toTextAnimationProps(bk, selectedClient.name) as unknown as Record<string, unknown>;
       default:
-        return entry.defaultProps as Record<string, unknown>;
+        return entry.defaultProps as unknown as Record<string, unknown>;
     }
   })();
 
