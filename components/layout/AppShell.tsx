@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { Sidebar } from "./Sidebar";
 import { Topbar } from "./Topbar";
 import { CommandPalette } from "./CommandPalette";
+import { FloatingAiButton } from "./FloatingAiButton";
 import { useUiStore } from "@/store/useUiStore";
 
 interface AppShellProps {
@@ -30,6 +31,7 @@ export function AppShell({ children }: AppShellProps) {
         <main className="flex-1 min-w-0">{children}</main>
       </div>
       <CommandPalette />
+      <FloatingAiButton />
     </div>
   );
 }

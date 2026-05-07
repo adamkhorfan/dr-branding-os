@@ -17,6 +17,7 @@ import {
   Network,
   Settings,
   TrendingUp,
+  Zap,
   type LucideIcon,
 } from "lucide-react";
 
@@ -37,6 +38,7 @@ export const NAV_GROUPS: NavGroup[] = [
     label: "Workspace",
     items: [
       { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard, shortcut: "D" },
+      { label: "AI Command Center", href: "/ai-command-center", icon: Zap, shortcut: "I" },
       { label: "Analytics", href: "/analytics", icon: TrendingUp, shortcut: "A" },
       { label: "Clients", href: "/clients", icon: Users, shortcut: "C" },
       { label: "Workflow Command Center", href: "/workflows", icon: Workflow, shortcut: "W" },
