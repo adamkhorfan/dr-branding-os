@@ -1,6 +1,11 @@
+import dynamic from "next/dynamic";
 import { PageContainer } from "@/components/shared/PageContainer";
 import { PageHeader } from "@/components/shared/PageHeader";
-import { N8nBuilderWorkspace } from "@/components/n8n-builder/N8nBuilderWorkspace";
+
+const N8nBuilderWorkspace = dynamic(
+  () => import("@/components/n8n-builder/N8nBuilderWorkspace").then((m) => m.N8nBuilderWorkspace),
+  { ssr: false },
+);
 
 export const metadata = { title: "n8n Workflow Builder · DR Branding OS" };
 
