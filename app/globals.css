@@ -1,0 +1,131 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Default (dark) — DR Branding OS premium palette */
+    --bg-base: 240 5% 5%;          /* near-black */
+    --bg-surface: 240 5% 7%;       /* card surface */
+    --bg-elevated: 240 4% 9%;      /* elevated surface */
+    --bg-inset: 240 6% 4%;         /* inset/recessed */
+
+    --border: 240 4% 14%;
+    --border-strong: 240 4% 20%;
+
+    --fg: 0 0% 96%;
+    --fg-muted: 240 4% 64%;
+    --fg-subtle: 240 4% 46%;
+    --fg-inverted: 240 6% 8%;
+
+    /* Champagne accent — restrained, single source of color */
+    --accent: 36 32% 72%;
+    --accent-muted: 36 24% 56%;
+    --accent-fg: 240 6% 8%;
+
+    --success: 152 38% 56%;
+    --warning: 38 70% 62%;
+    --danger: 4 64% 60%;
+    --info: 210 60% 64%;
+
+    --ring: 36 32% 72%;
+
+    --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+      "Helvetica Neue", Arial, sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+      "Liberation Mono", "Courier New", monospace;
+    --font-serif: ui-serif, Georgia, "Times New Roman", serif;
+  }
+
+  .light {
+    --bg-base: 36 14% 97%;
+    --bg-surface: 0 0% 100%;
+    --bg-elevated: 36 10% 98%;
+    --bg-inset: 36 12% 94%;
+
+    --border: 240 6% 90%;
+    --border-strong: 240 6% 82%;
+
+    --fg: 240 8% 12%;
+    --fg-muted: 240 4% 38%;
+    --fg-subtle: 240 4% 56%;
+    --fg-inverted: 0 0% 100%;
+
+    --accent: 32 28% 42%;
+    --accent-muted: 32 22% 56%;
+    --accent-fg: 0 0% 100%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html,
+  body {
+    @apply bg-bg-base text-fg antialiased;
+    font-feature-settings: "cv11", "ss01", "ss03";
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    font-family: var(--font-sans);
+  }
+
+  /* Density modes */
+  .density-compact {
+    --row-py: 0.5rem;
+    --section-gap: 1rem;
+  }
+  .density-comfortable {
+    --row-py: 0.875rem;
+    --section-gap: 1.5rem;
+  }
+
+  /* Numerals */
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Subtle scrollbar */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--border-strong));
+    border-radius: 8px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--fg-subtle));
+    background-clip: content-box;
+    border: 2px solid transparent;
+  }
+
+  /* Focus ring */
+  :focus-visible {
+    outline: 2px solid hsl(var(--ring) / 0.7);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+}
+
+@layer components {
+  .hairline {
+    @apply border border-border;
+  }
+  .surface {
+    @apply bg-bg-surface border border-border rounded-lg;
+  }
+  .surface-elevated {
+    @apply bg-bg-elevated border border-border rounded-lg;
+  }
+  .text-display {
+    font-family: var(--font-serif);
+    @apply tracking-tighter2;
+  }
+}
