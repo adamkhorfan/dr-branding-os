@@ -6,3 +6,4 @@ export * from "./report";
 export * from "./message";
 export * from "./common";
 export * from "./n8n";
+export * from "./analytics";

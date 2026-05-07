@@ -97,10 +97,10 @@ export function Sidebar() {
         {!collapsed && (
           <div className="px-5 py-4 border-t border-border">
             <div className="text-2xs uppercase tracking-[0.12em] text-fg-subtle">
-              v0.8 · M-Motion
+              v0.9 · M9
             </div>
             <div className="text-xs text-fg-muted mt-1">
-              Remotion Template Engine
+              Analytics & Intelligence
             </div>
           </div>
         )}
