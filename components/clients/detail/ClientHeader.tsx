@@ -7,6 +7,9 @@ import {
   RotateCcw,
   Trash2,
   MoreHorizontal,
+  ExternalLink,
+  Copy,
+  Check,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -29,7 +32,16 @@ interface ClientHeaderProps {
 
 export function ClientHeader({ client }: ClientHeaderProps) {
   const [editOpen, setEditOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
   const archive = useClientsStore((s) => s.archive);
+
+  function copyPortalLink() {
+    const url = `${window.location.origin}/portal/${client.id}`;
+    navigator.clipboard.writeText(url).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  }
   const restore = useClientsStore((s) => s.restore);
   const remove = useClientsStore((s) => s.remove);
   const router = useRouter();
@@ -77,6 +89,30 @@ export function ClientHeader({ client }: ClientHeaderProps) {
           </div>
 
           <div className="flex items-center gap-2 shrink-0">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={copyPortalLink}
+              className="gap-1.5 text-fg-muted"
+            >
+              {copied ? (
+                <Check className="h-3.5 w-3.5 text-success" strokeWidth={1.75} />
+              ) : (
+                <Copy className="h-3.5 w-3.5" strokeWidth={1.75} />
+              )}
+              {copied ? "Copied!" : "Portal link"}
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              asChild
+              className="gap-1.5 text-fg-muted"
+            >
+              <a href={`/portal/${client.id}`} target="_blank" rel="noopener noreferrer">
+                <ExternalLink className="h-3.5 w-3.5" strokeWidth={1.75} />
+                Open portal
+              </a>
+            </Button>
             <Button
               variant="secondary"
               size="sm"
