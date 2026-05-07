@@ -24,6 +24,7 @@ import { useWorkflowsStore } from "@/store/useWorkflowsStore";
 import { useCampaignsStore } from "@/store/useCampaignsStore";
 import { useReportsStore } from "@/store/useReportsStore";
 import { generateReport } from "@/lib/studio/reportGenerator";
+import { ReportExportButton } from "@/components/reports/ReportExportButton";
 import type { Report } from "@/types/report";
 
 function monthOptions(): { value: string; label: string }[] {
@@ -135,6 +136,7 @@ export function ReportsWorkspace() {
               key={report.id}
               report={report}
               clientName={clients.find((c) => c.id === report.clientId)?.name ?? "—"}
+              clientId={report.clientId}
               expanded={expandedId === report.id}
               onToggle={() => setExpandedId(expandedId === report.id ? null : report.id)}
               onRemove={() => remove(report.id)}
@@ -152,9 +154,10 @@ interface ReportCardProps {
   expanded: boolean;
   onToggle: () => void;
   onRemove: () => void;
+  clientId: string;
 }
 
-function ReportCard({ report, clientName, expanded, onToggle, onRemove }: ReportCardProps) {
+function ReportCard({ report, clientName, expanded, onToggle, onRemove, clientId }: ReportCardProps) {
   const monthLabel = new Date(report.month + "-01").toLocaleDateString("en-US", {
     month: "long",
     year: "numeric",
@@ -179,6 +182,9 @@ function ReportCard({ report, clientName, expanded, onToggle, onRemove }: Report
           </div>
         </div>
         <div className="flex items-center gap-2">
+          <div onClick={(e) => e.stopPropagation()}>
+            <ReportExportButton reportId={report.id} clientId={clientId} />
+          </div>
           <button
             onClick={(e) => { e.stopPropagation(); onRemove(); }}
             className="p-1.5 rounded text-fg-subtle hover:text-danger hover:bg-bg-elevated transition-colors"

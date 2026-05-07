@@ -1,6 +1,7 @@
 "use client";
 
-import { Search, Bell, Plus } from "lucide-react";
+import { Search, Plus } from "lucide-react";
+import { NotificationCenter } from "@/components/layout/NotificationCenter";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -39,9 +40,7 @@ export function Topbar() {
             <span>New</span>
           </Button>
 
-          <Button variant="ghost" size="icon-sm" aria-label="Notifications">
-            <Bell className="h-4 w-4" strokeWidth={1.75} />
-          </Button>
+          <NotificationCenter />
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

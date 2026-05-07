@@ -25,6 +25,7 @@ import type { Client } from "@/types/client";
 import { useClientsStore } from "@/store/useClientsStore";
 import { useRouter } from "next/navigation";
 import { ProfileEditDialog } from "./ProfileEditDialog";
+import { SendEmailButton } from "./SendEmailButton";
 
 interface ClientHeaderProps {
   client: Client;
@@ -113,6 +114,7 @@ export function ClientHeader({ client }: ClientHeaderProps) {
                 Open portal
               </a>
             </Button>
+            <SendEmailButton client={client} />
             <Button
               variant="secondary"
               size="sm"

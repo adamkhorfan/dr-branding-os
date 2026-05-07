@@ -18,6 +18,8 @@ import {
   Settings,
   TrendingUp,
   Zap,
+  FolderOpen,
+  Receipt,
   type LucideIcon,
 } from "lucide-react";
 
@@ -41,6 +43,7 @@ export const NAV_GROUPS: NavGroup[] = [
       { label: "AI Command Center", href: "/ai-command-center", icon: Zap, shortcut: "I" },
       { label: "Analytics", href: "/analytics", icon: TrendingUp, shortcut: "A" },
       { label: "Clients", href: "/clients", icon: Users, shortcut: "C" },
+      { label: "Brand Assets", href: "/assets", icon: FolderOpen, shortcut: "B" },
       { label: "Workflow Command Center", href: "/workflows", icon: Workflow, shortcut: "W" },
     ],
   },
@@ -69,6 +72,7 @@ export const NAV_GROUPS: NavGroup[] = [
       { label: "Content Calendar", href: "/content-calendar", icon: CalendarDays },
       { label: "Client Messages", href: "/messages", icon: MessageSquare },
       { label: "Reports", href: "/reports", icon: BarChart3 },
+      { label: "Billing", href: "/billing", icon: Receipt },
       { label: "n8n Workflow Builder", href: "/n8n-builder", icon: Network },
     ],
   },
